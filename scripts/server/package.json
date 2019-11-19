@@ -1,0 +1,25 @@
+{
+  "name": "webdev-final",
+  "version": "0.0.0",
+  "description": "Webdev final project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olsonadr/webdev-final-project.git"
+  },
+  "keywords": [
+    "webdev"
+  ],
+  "author": "Nicholas Olson, Pierre Carr, John Zontos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/olsonadr/webdev-final-project/issues"
+  },
+  "homepage": "https://github.com/olsonadr/webdev-final-project#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
