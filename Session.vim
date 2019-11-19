@@ -15,6 +15,7 @@ $argadd run.sh
 tabnew
 tabnew
 tabnew
+tabnew
 tabrewind
 edit run.sh
 set splitbelow splitright
@@ -94,6 +95,32 @@ normal! zt
 1
 normal! 0
 tabnext
+edit makefile
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 4 - ((3 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+4
+normal! 0
+tabnext
 edit README.md
 set splitbelow splitright
 set nosplitbelow
@@ -121,9 +148,10 @@ normal! zt
 normal! 0
 tabnext 1
 badd +0 run.sh
-badd +0 scripts/server/server.js
-badd +0 scripts/neural/neural.js
-badd +0 README.md
+badd +1 scripts/server/server.js
+badd +1 scripts/neural/neural.js
+badd +1 README.md
+badd +0 makefile
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
