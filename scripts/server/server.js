@@ -5,15 +5,15 @@ var path    = require('path');
 var app	    = express();
 
 const publicDir = './public/';
-const port = 3000;
+const port = process.env.PORT;
 
 
 fs.readdir(publicDir, (err, fileNames) => {
     fileNames.forEach((fileName) => {
-	app.get('/' + fileName, (request, response, next) => {
-	    console.log(`\'${fileName}\' requested!`);
-	    response.status(200).sendFile(fileName, { root: publicDir });
-	});
+    	app.get('/' + fileName, (request, response, next) => {
+    	    console.log(`\'${fileName}\' requested!`);
+    	    response.status(200).sendFile(fileName, { root: publicDir });
+    	});
     });
 });
 
@@ -30,4 +30,3 @@ app.get('/', (request, response, next) => {
 });
 
 app.listen(port, () => { console.log(`Server is a go on port ${port}`); });
-

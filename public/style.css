@@ -1,3 +1,8 @@
+#first-canvas {
+  border: solid black 5px;
+}
+
+
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
