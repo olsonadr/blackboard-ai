@@ -1,3 +1,4 @@
+node_modules
 scripts/server/node_modules
 scripts/neural/node_modules
 scripts/canvas/node_modules

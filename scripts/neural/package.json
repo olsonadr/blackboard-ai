@@ -4,7 +4,7 @@
   "description": "Neural network component of final project",
   "main": "neural.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./neural.js"
   },
   "repository": {
     "type": "git",
@@ -13,13 +13,14 @@
   "keywords": [
     "neural"
   ],
-  "author": "Nicholas Olson, Pierre Carr, John Zontos",
+  "author": "Nicholas Olson, Pierre Carr",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/olsonadr/webdev-final-project/issues"
   },
   "homepage": "https://github.com/olsonadr/webdev-final-project#readme",
   "dependencies": {
+    "protocol-buffers": "^4.1.0",
     "tensorflow": "^0.7.0"
   }
 }

@@ -25,7 +25,7 @@ then
     printf 'Please pass desired PORT as command-line argument!\n'
 else
     printf 'Launching server...\n=---------------------------\n\n'
-    PORT=$port node ./scripts/server/server.js
+    PORT=$port npm run-script start
     printf '\n=---------------------------\nServer closed...'
 fi
 
