@@ -4,9 +4,8 @@ var fs	    = require('fs');
 var path    = require('path');
 var app	    = express();
 
-const publicDir = './public/';
-const port = process.env.PORT;
-
+const publicDir = '../../public/'; // Was undefined as "./public/"
+const port = process.env.PORT || 3000;
 
 fs.readdir(publicDir, (err, fileNames) => {
     fileNames.forEach((fileName) => {
@@ -20,13 +19,7 @@ fs.readdir(publicDir, (err, fileNames) => {
 app.get('/', (request, response, next) => {
     console.log('/ request!');
 
-    var resBody = "<html>";
-    resBody += "<body>";
-    resBody += "<h1>Hello World!</h1>";
-    resBody += "</body>";
-    resBody += "</html>";
-
-    response.send(resBody);
+    response.status(200).sendFile("index.html", { root: publicDir });
 });
 
 app.listen(port, () => { console.log(`Server is a go on port ${port}`); });
