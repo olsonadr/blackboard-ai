@@ -1,48 +1,53 @@
 body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
 }
 
 a {
-  text-decoration: none;
-  color: #f67811;
+    text-decoration: none;
+    color: #f67811;
 }
 
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 header {
-  background-color: #000;
-  display: flex;
-  align-items: center;
-  position: relative;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
 header a {
-  color: #fff;
+    color: #fff;
 }
 
 .site-title {
-  font-family: "Roboto Slab", serif;
-  font-size: 80px;
-  font-weight: 100;
-  margin: 0 0 0 20px;
-  padding-top: 30px;
+    font-family: "Roboto Slab", serif;
+    font-size: 80px;
+    font-weight: 100;
+    margin: 0 0 0 20px;
+    padding-top: 30px;
 }
 
 .site-title a:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .content {
-  display: inline;
+    display: flex;
 }
 
 #first-canvas {
-  border: solid red 4px;
+    border: solid red 4px;
 }
 
+#clear-button {
+}
+
+#save-button {
+}
 
 
 
