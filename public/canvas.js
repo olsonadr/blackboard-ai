@@ -1,12 +1,12 @@
-console.log('Canvas is up and running!');
-
 window.addEventListener("load", () => {
-    const canvas = document.querySelector("#first-canvas");
-    const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const scale = 10;
-    const width = 28;
-    const height = 28;
+    const canvas  = document.querySelector("#first-canvas");
+    const ctx     = canvas.getContext("2d");
+    const rect    = canvas.getBoundingClientRect();
+    const scale   = 1;
+    const width   = 400;
+    const height  = 400;
+    const bg      = "#000000";
+    const fg      = "#FFFFFF";
 
     canvas.width = width;
     canvas.height = height;
@@ -16,19 +16,25 @@ window.addEventListener("load", () => {
 
     let drawing = false;
 
-    canvas.addEventListener("mousedown", startDraw);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("mouseup", endDraw);
+    canvas.addEventListener("mousedown",  startDraw);
+    canvas.addEventListener("mousemove",  draw);
+    canvas.addEventListener("mouseup",    endDraw);
 
     const clear = document.querySelector("#clear-button");
+    const save  = document.querySelector("#save-button");
+
+    ctx.strokeStyle = bg;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     clear.onclick = function () {
         // Store the current transformation matrix
         ctx.save();
 
         // Use the identity matrix while clearing the canvas
+        ctx.strokeStyle = bg;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Restore the transform
         ctx.restore();
@@ -42,11 +48,12 @@ window.addEventListener("load", () => {
     function draw(e) {
         if (!drawing) return;
 
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 20;
         ctx.lineCap = "round";
+        ctx.strokeStyle = fg;
 
-        let mouseX = (e.clientX - rect.left) / scale;
-        let mouseY = (e.clientY - rect.top) / scale;
+        let mouseX = (e.clientX - rect.left + scrollX) / scale;
+        let mouseY = (e.clientY - rect.top + scrollY) / scale;
 
         ctx.lineTo(mouseX, mouseY);
         ctx.stroke();
@@ -59,3 +66,5 @@ window.addEventListener("load", () => {
         ctx.beginPath();
     }
 });
+
+console.log('Canvas is up and running!');

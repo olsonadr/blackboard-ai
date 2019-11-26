@@ -16,6 +16,8 @@ tabnew
 tabnew
 tabnew
 tabnew
+tabnew
+tabnew
 tabrewind
 edit run.sh
 set splitbelow splitright
@@ -43,7 +45,33 @@ normal! zt
 2
 normal! 0
 tabnext
-edit scripts/server/server.js
+edit scripts/server/public/neural.js
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 49 - ((22 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+49
+normal! 05|
+tabnext
+edit scripts/server/public/canvas.js
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -67,9 +95,35 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
-normal! 0
+normal! 041|
 tabnext
-edit scripts/neural/neural.js
+edit scripts/neural/training.py
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 37 - ((32 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+37
+normal! 040|
+tabnext
+edit scripts/server/server.js
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -146,12 +200,15 @@ exe s:l
 normal! zt
 1
 normal! 0
-tabnext 1
+tabnext 7
 badd +0 run.sh
 badd +1 scripts/server/server.js
-badd +1 scripts/neural/neural.js
+badd +0 scripts/neural/neural.js
+badd +1 makefile
 badd +1 README.md
-badd +0 makefile
+badd +0 scripts/neural/training.py
+badd +0 scripts/server/public/canvas.js
+badd +0 scripts/server/public/neural.js
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
