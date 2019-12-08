@@ -13,11 +13,11 @@ num_epochs = (int(sys.argv[1])) if (sys.argv[0]) else (5)
 
 training_data = training_data.reshape(training_data.shape[0], 28, 28, 1)
 training_data = training_data.astype("float32")
-training_data = training_data / 255
+training_data = training_data / 255.0
 
 test_data     = test_data.reshape(test_data.shape[0], 28, 28, 1)
 test_data     = test_data.astype("float32")
-test_data     = test_data / 255
+test_data     = test_data / 255.0
 
 model = tf.keras.Sequential([
     tf.keras.layers.Flatten(input_shape = (28, 28, 1)),
