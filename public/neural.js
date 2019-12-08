@@ -17,35 +17,54 @@ const bg                = "#000000";
 const bgRedDecimal      = 0;
 const bgGreenDecimal    = 0;
 const bgBlueDecimal     = 0;
+let   currPrediction;
 
 // On script load...
 let model;
 (async function() {
-  model = undefined;
-  model = await tf.loadLayersModel(modelPath);
-  console.log('Model loaded from storage');
+    model = undefined;
+    model = await tf.loadLayersModel(modelPath);
+    console.log('Model loaded from storage');
 
-  // Compile model
-  model.compile({
-    optimizer:  'adam', //'tf.keras.optimizers.Adam()',
-    loss:       'sparseCategoricalCrossentropy',
-    metrics:    ['accuracy']
-  });
-
-  // Establish save on click functionality
-  saveButton.onclick = () => {
-    isolateDigitsOnCanvas().then((isolatedDigits) => {
-      // console.log(isolatedDigits);
-      isolatedDigits.forEach((digit) => {
-        // clearCanvas(inputCanvas);
-        // ctx.putImageData(digit.data,0,0);
-          centerAndScaleDigit(digit).then((scaledCanvas) => {
-              predict(scaledCanvas);
-          });
-      });
+    // Compile model
+    model.compile({
+      optimizer:  'adam', //'tf.keras.optimizers.Adam()',
+      loss:       'sparseCategoricalCrossentropy',
+      metrics:    ['accuracy']
     });
-  };
+
+    // Establish save on click functionality
+    saveButton.onclick = () => {
+        let predictionResult;
+
+        // Isolate digits, then predict
+        (async function() {return isolateDigitsOnCanvas()})().then( (result) => {
+
+          // Predict based on isolated canvases, then use predictions
+          var isolatedDigits = result;
+          (async function() {
+              var isolatedDigitCanvases = [];
+              await asyncForEach(isolatedDigits, (digit) => {
+                      centerAndScaleDigit(digit).then((scaledCanvas) => {
+                            isolatedDigitCanvases.push(scaledCanvas);
+                      });
+              });
+              currPrediction = await predictArrayOfSquareCanvas(isolatedDigitCanvases);
+              // return currPrediction;
+            })().then(() => {
+                // Use predictions (JOHN USE THEM HERE)
+                console.log(currPrediction);
+            });
+        });
+
+    };
 })();
+
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
 
 async function isolateDigitsOnCanvas() {
     // Variables
@@ -181,8 +200,9 @@ async function centerAndScaleDigit(isolatedDigit) {
     return scaledCanvas;
 }
 
-async function predict(canvas) {
+async function predictSingleSquareCanvas(canvas) {
     console.log("Predicting...");
+    var predictionArray = [];
 
     var preprocessed = tf.browser.fromPixels(canvas)
                                  .resizeNearestNeighbor([28, 28])
@@ -209,6 +229,37 @@ async function predict(canvas) {
     let result = await tf.argMax(predictions).data();
     console.log("Most likely  =>  " + labels[result]);
     console.log("------------------------>");
+
+    return labels[result];
+}
+
+async function predictArrayOfSquareCanvas(canvasArray) {
+
+      let predictionArray = [];
+      await asyncForEach(canvasArray, async (canvas, index) => {
+          var preprocessed = tf.browser.fromPixels(canvas)
+                                       .resizeNearestNeighbor([28, 28])
+                                       .mean(2)
+                                       .expandDims(2)
+                                       .expandDims()
+                                       .toFloat();
+                                       // .div(255.0);
+
+          let predictions;
+          predictions = await model.predict(preprocessed).data();
+
+          let result;
+          result = await tf.argMax(predictions).data();
+
+          console.log(`[Digit ${index + 1}] ` + "Most likely  =>  " + labels[result]);
+          console.log("----------->");
+
+          predictionArray.push(result[0]);
+      });
+
+      console.log(`Overall prediction => ${predictionArray}`);
+      console.log("------------------------>");
+      return predictionArray;
 }
 
 function clearCanvas(canvas) {
