@@ -319,3 +319,10 @@ header a {
   font-size: 32px;
   margin: 0;
 }
+
+#neural-canvas {
+  /* display: hidden; */
+  font-size: 32px;
+  margin: 0;
+  float: left;
+}

@@ -2,9 +2,9 @@
 // Global variables
 const modelPath         = "./saved/tfjsmodel/model.json"; //path.join(__dirname, 'tfjsmodel', 'model.json');
 const saveButton        = document.querySelector("#save-button");
-const inputCanvas       = document.querySelector("#first-canvas");
-const ctx               = inputCanvas.getContext("2d");
-const inputCanvasWidth  = 1200;
+const neuralCanvas       = document.querySelector("#neural-canvas");
+const neuralCTX               = neuralCanvas.getContext("2d");
+const inputCanvasWidth  = Math.round(window.innerWidth * .8);
 const inputCanvasHeight = 400;
 const targetWidth       = 400;
 const targetHeight      = 400;
@@ -69,7 +69,7 @@ async function asyncForEach(array, callback) {
 async function isolateDigitsOnCanvas() {
     // Variables
     var listOfDigits = [];
-    var imgData = ctx.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
+    var imgData = neuralCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
 
     var inDigit = false;
     var currMin = -1;
@@ -95,7 +95,7 @@ async function isolateDigitsOnCanvas() {
             }
 
             // Get vertical slice of canvas containing digit
-            listOfDigits.push({data: ctx.getImageData(currMin, 0, x - currMin, inputCanvasHeight), width: x - currMin, height: inputCanvasHeight, ctxMinX: currMin});
+            listOfDigits.push({data: neuralCTX.getImageData(currMin, 0, x - currMin, inputCanvasHeight), width: x - currMin, height: inputCanvasHeight, ctxMinX: currMin});
 
             // Reset variables
             inDigit = false;
@@ -129,7 +129,7 @@ async function isolateDigitsOnCanvas() {
                 }
 
                 // Get horizontal slice of canvas containing digit
-                digit.data = ctx.getImageData(digit.ctxMinX, currMin, digit.width, y - currMin);
+                digit.data = neuralCTX.getImageData(digit.ctxMinX, currMin, digit.width, y - currMin);
                 digit.height = y - currMin;
 
                 // Reset variables
@@ -270,7 +270,7 @@ function clearCanvas(canvas) {
     // Use the identity matrix while clearing the canvas
     canvas.getContext('2d').strokeStyle = bg;
     context.setTransform(1, 0, 0, 1, 0, 0);
-    context.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
+    context.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
 
     // Restore the transform
     context.restore();
