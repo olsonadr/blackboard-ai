@@ -22,7 +22,7 @@ let prevSelect            = { x1: 0, y1: 0,
                               x2: inputCanvasWidth,
                               y2: inputCanvasHeight };
 
-let selectLineWidth         = 6;
+let selectLineWidth       = 6;
 let prevEvent;
 let prevBrushUnderData;
 let prevSelectUnderData;
@@ -72,21 +72,21 @@ window.addEventListener("load", () => {
 
     drawToolButton.onclick = function () {
         currTool = 'draw';
-        currLineWidth = 20;
+        inputCTX.lineWidth = 20;
         inputCTX.lineCap = "round";
         inputCTX.strokeStyle = fg;
     };
 
     eraseToolButton.onclick = function () {
         currTool = 'erase';
-        currLineWidth = 40;
+        inputCTX.lineWidth = 40;
         inputCTX.lineCap = "round";
         inputCTX.strokeStyle = bg;
     };
 
     selectToolButton.onclick = function () {
         currTool = 'select';
-        currLineWidth = selectLineWidth;
+        inputCTX.lineWidth = selectLineWidth;
         inputCTX.lineCap = "round";
         inputCTX.strokeStyle = fg;
     };
@@ -110,6 +110,8 @@ window.addEventListener("load", () => {
             inputCTX.lineWidth = 40;
             inputCTX.lineCap = "round";
             inputCTX.strokeStyle = bg;
+            inputCTX.beginPath();
+            inputCTX.moveTo(mouseX - inputCTX.lineWidth / 4, mouseY);
             drawBrush(e);
         } else if (currTool == 'select') {
             // select stuff
@@ -134,7 +136,6 @@ window.addEventListener("load", () => {
             case 'draw':
             case 'erase':
                 drawBrush(e);
-                // drawSelect(e);
                 break;
             case 'select':
                 drawSelect(e);
@@ -212,8 +213,8 @@ window.addEventListener("load", () => {
       var height = Math.abs(currSelect.y1 - currSelect.y2);
 
       // Get content underneath selection
-      prevSelectUnderData = inputCTX.getImageData(topLeftX - inputCTX.lineWidth * 2, topLeftY - inputCTX.lineWidth * 2,
-                                                  width + inputCTX.lineWidth * 4, height + inputCTX.lineWidth * 4);
+      prevSelectUnderData = inputCTX.getImageData(topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2,
+                                                  width + selectLineWidth * 4, height + selectLineWidth * 4);
 
       // Draw current selection
       inputCTX.beginPath();
@@ -238,7 +239,7 @@ window.addEventListener("load", () => {
       //     inputCTX.fillRect(0, 0, inputCanvasWidth, inputCanvasHeight);
       //     selectCleared = false;
       // } else {
-          inputCTX.putImageData(prevSelectUnderData, topLeftX - inputCTX.lineWidth * 2, topLeftY - inputCTX.lineWidth * 2);
+      inputCTX.putImageData(prevSelectUnderData, topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2);
       // }
     }
 
@@ -268,8 +269,8 @@ window.addEventListener("load", () => {
           neuralCTX.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
         }
         else {
-          prevSelectUnderData = inputCTX.getImageData(topLeftX - inputCTX.lineWidth * 2, topLeftY - inputCTX.lineWidth * 2,
-                                                      width + inputCTX.lineWidth * 4, height + inputCTX.lineWidth * 4);
+          prevSelectUnderData = inputCTX.getImageData(topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2,
+                                                      width + selectLineWidth * 4, height + selectLineWidth * 4);
         }
 
         neuralCTX.strokeStyle = fg;
