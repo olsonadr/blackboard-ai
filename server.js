@@ -37,7 +37,7 @@ app.post('/save', function(req, res, next) {
     var newEntry = JSON.stringify({ name: req.body.fname, data: req.body.image });
     fs.writeFileSync(`${__dirname}/data/saved-states/${req.body.fname}.json`, newEntry);
     indexContext.initData = req.body.image;
-    indexContext.initMessage = `Saved data as \"${req.body.fname}\".`;
+    indexContext.initMessage = `Saved data as \"${req.body.fname}.\"`;
     res.render('index', indexContext);
 });
 app.post('/load', function(req, res, next) {
@@ -46,7 +46,7 @@ app.post('/load', function(req, res, next) {
         var data = fs.readFileSync(`data/saved-states/${req.body.fname}.json`);
         let canvasData = JSON.parse(data);
         indexContext.initData = canvasData.data;
-        indexContext.initMessage = `Loaded saved data \"${req.body.fname}\".`;
+        indexContext.initMessage = `Loaded saved data \"${req.body.fname}.\"`;
     } else {
         indexContext.initData = "";
         indexContext.initMessage = `No saved data \"${req.body.fname}\" exists.`;

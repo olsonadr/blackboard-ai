@@ -6,9 +6,9 @@ var inputRect             = inputCanvas.getBoundingClientRect();
 var neuralRect            = neuralCanvas.getBoundingClientRect();
 const scale               = 1;
 var inputCanvasWidth      = Math.round(window.innerWidth - 112);
-var neuralCanvasWidth     = Math.round(window.innerHeight - 72);
-var inputCanvasHeight     = 400;
-var neuralCanvasHeight    = 400;
+var inputCanvasHeight     = Math.round(window.innerHeight - 72);
+var neuralCanvasWidth     = Math.round(window.innerWidth - 112);
+var neuralCanvasHeight    = Math.round(window.innerHeight - 72);
 const bg                  = "#000000";
 const fg                  = "#FFFFFF";
 var currTool              = "draw";
@@ -82,11 +82,53 @@ window.addEventListener("load", () => {
 
     clearButton.click();
 
+    let white = "#FFFFFF";
+    let grey = "#d3d3d3";
+    let black = "#000000";
+
+    function setColorOfButtons() {
+        if (currTool == "draw") {
+            drawToolButton.style.backgroundColor = grey;
+            eraseToolButton.style.backgroundColor = white;
+            selectToolButton.style.backgroundColor = white;
+            drawToolButton.style.color = white;
+            eraseToolButton.style.color = black;
+            selectToolButton.style.color = black;
+        } else if (currTool == "erase"){
+            drawToolButton.style.backgroundColor = white;
+            eraseToolButton.style.backgroundColor = grey;
+            selectToolButton.style.backgroundColor = white;
+            drawToolButton.style.color = black;
+            eraseToolButton.style.color = white;
+            selectToolButton.style.color = black;
+        } else if (currTool == "select") {
+            drawToolButton.style.backgroundColor = white;
+            eraseToolButton.style.backgroundColor = white;
+            selectToolButton.style.backgroundColor = grey;
+            drawToolButton.style.color = black;
+            eraseToolButton.style.color = black;
+            selectToolButton.style.color = white;
+        }
+    }
+
     drawToolButton.onclick = function () {
         currTool = 'draw';
         inputCTX.lineWidth = 20;
         inputCTX.lineCap = "round";
         inputCTX.strokeStyle = fg;
+        setColorOfButtons();
+    };
+
+    drawToolButton.onmouseenter = function () {
+        drawToolButton.style.backgroundColor = grey;
+        drawToolButton.style.color = white;
+    };
+
+    drawToolButton.onmouseleave = function () {
+        if (currTool != "draw") {
+            drawToolButton.style.backgroundColor = white;
+            drawToolButton.style.color = black;
+        }
     };
 
     eraseToolButton.onclick = function () {
@@ -94,6 +136,19 @@ window.addEventListener("load", () => {
         inputCTX.lineWidth = 40;
         inputCTX.lineCap = "round";
         inputCTX.strokeStyle = bg;
+        setColorOfButtons();
+    };
+
+    eraseToolButton.onmouseenter = function () {
+        eraseToolButton.style.backgroundColor = grey;
+        eraseToolButton.style.color = white;
+    };
+
+    eraseToolButton.onmouseleave = function () {
+        if (currTool != "erase") {
+            eraseToolButton.style.backgroundColor = white;
+            eraseToolButton.style.color = black;
+        }
     };
 
     selectToolButton.onclick = function () {
@@ -101,6 +156,19 @@ window.addEventListener("load", () => {
         inputCTX.lineWidth = selectLineWidth;
         inputCTX.lineCap = "round";
         inputCTX.strokeStyle = fg;
+        setColorOfButtons();
+    };
+
+    selectToolButton.onmouseenter = function () {
+        selectToolButton.style.backgroundColor = grey;
+        selectToolButton.style.color = white;
+    };
+
+    selectToolButton.onmouseleave = function () {
+        if (currTool != "select") {
+            selectToolButton.style.backgroundColor = white;
+            selectToolButton.style.color = black;
+        }
     };
 
     drawToolButton.click();
@@ -126,6 +194,7 @@ window.addEventListener("load", () => {
     document.querySelector("#load-modal-close-button").onclick = closeLoadModal;
     document.querySelector("#init-message-modal-close-button").onclick = closeInitMessageModal;
     document.querySelector("#predict-message-modal-close-button").onclick = closePredictMessageModal;
+    document.querySelector("#predict-message-modal-accept-button").onclick = closePredictMessageModal;
 
     document.querySelectorAll(".modal-backdrop").forEach((item) => {
         item.addEventListener("click", () => {
@@ -264,11 +333,6 @@ window.addEventListener("load", () => {
       let mouseX = (e.clientX - inputRect.left + scrollX) / scale;
       let mouseY = (e.clientY - inputRect.top + scrollY)  / scale;
 
-      // // First ever select box
-      // if (prevSelectUnderData == undefined) {
-      //     prevSelectUnderData = inputCTX.getImageData(0, 0, inputCanvasWidth - 1, inputCanvasHeight - 1);
-      // }
-
       // Clear previous rectangle
       removeSelectBox();
 
@@ -349,7 +413,17 @@ window.addEventListener("load", () => {
     }
 
     function storeSaveData() {
-         document.querySelector("#save-modal-image-data").value = inputCanvas.toDataURL();
+        // Store backup of whole canvas
+        let backup = inputCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
+
+        // Remove select box when saving
+        removeSelectBox();
+
+        // Store data url of canvas without select box in outbound element
+        document.querySelector("#save-modal-image-data").value = inputCanvas.toDataURL();
+
+        // Restore backup of canvas
+        inputCTX.putImageData(backup, 0, 0);
     }
 });
 
@@ -358,6 +432,12 @@ window.onresize = setSize;
 function setSize() {
     var preResizeInputData  = inputCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
     var preResizeNeuralData = neuralCTX.getImageData(0, 0, neuralCanvasWidth, neuralCanvasHeight);
+
+    if (neuralCanvasWidth == inputCanvasWidth
+                && neuralCanvasHeight == inputCanvasHeight) {
+        neuralCanvasWidth   = Math.round(window.innerWidth - 112);
+        neuralCanvasHeight  = Math.round(window.innerHeight - 72);
+    }
 
     inputCanvasWidth   = Math.round(window.innerWidth - 112);
     inputCanvasHeight  = Math.round(window.innerHeight - 72);

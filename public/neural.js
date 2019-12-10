@@ -4,8 +4,8 @@ const modelPath         = "./saved/tfjsmodel/model.json"; //path.join(__dirname,
 const predictButton     = document.querySelector("#predict-button");
 const neuralCanvas      = document.querySelector("#neural-canvas");
 const neuralCTX         = neuralCanvas.getContext("2d");
-const inputCanvasWidth  = Math.round(window.innerWidth * .8);
-const inputCanvasHeight = 400;
+var neuralCanvasWidth   = Math.round(window.innerWidth - 112);
+var neuralCanvasHeight  = Math.round(window.innerHeight - 72);
 const targetWidth       = 400;
 const targetHeight      = 400;
 const labels            = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -36,6 +36,10 @@ let model;
     // Establish save on click functionality
     predictButton.onclick = () => {
         let predictionResult;
+
+        // Get new dims of neuralCanvas
+        neuralCanvasWidth = neuralCanvas.width;
+        neuralCanvasHeight = neuralCanvas.height;
 
         // Open modal
         document.querySelector("#predict-message-modal-text").textContent = "Loading...";
@@ -70,11 +74,11 @@ let model;
 })();
 
 function concatArray(array){
-    let concat = "";
-    for(var i = 0; i < array.length; i++){
-        concat+=array[i];
+    if (array.length == 0) {
+        return "No digits recognized";
+    } else {
+        return array.join(""); // this accomplishes what we want in one line
     }
-    return array.join(""); // this accomplishes what we want in one line
 }
 
 async function asyncForEach(array, callback) {
@@ -90,33 +94,33 @@ function openPredictMessageModal() {
 async function isolateDigitsOnCanvas() {
     // Variables
     var listOfDigits = [];
-    var imgData = neuralCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
+    var imgData = neuralCTX.getImageData(0, 0, neuralCanvasWidth, neuralCanvasHeight);
 
     var inDigit = false;
     var currMin = -1;
 
     // Loop through to get vertical slices
-    for (var x = 0; x < inputCanvasWidth + 1; x++) {
+    for (var x = 0; x < neuralCanvasWidth + 1; x++) {
         if(inDigit == false
               && !verticalSliceContainsOnlyBG(imgData, x,
-                                          inputCanvasWidth,
-                                          inputCanvasHeight)) {
+                                          neuralCanvasWidth,
+                                          neuralCanvasHeight)) {
             // Now in digit
             inDigit = true;
             currMin = x;
-        } else if((x == inputCanvasWidth)
+        } else if((x == neuralCanvasWidth)
                   || (inDigit == true && verticalSliceContainsOnlyBG(imgData, x,
-                                                         inputCanvasWidth,
-                                                         inputCanvasHeight))) {
+                                                         neuralCanvasWidth,
+                                                         neuralCanvasHeight))) {
             // Now out of digit
 
             // If no pixels were detected
-            if (x == inputCanvasWidth && currMin == -1) {
+            if (x == neuralCanvasWidth && currMin == -1) {
                 currMin = x - 1;
             }
 
             // Get vertical slice of canvas containing digit
-            listOfDigits.push({data: neuralCTX.getImageData(currMin, 0, x - currMin, inputCanvasHeight), width: x - currMin, height: inputCanvasHeight, ctxMinX: currMin});
+            listOfDigits.push({data: neuralCTX.getImageData(currMin, 0, x - currMin, neuralCanvasHeight), width: x - currMin, height: neuralCanvasHeight, ctxMinX: currMin});
 
             // Reset variables
             inDigit = false;
