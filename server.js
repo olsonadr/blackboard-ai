@@ -18,15 +18,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Context for html rendering
 var indexContext = {
-<<<<<<< HEAD
+
   siteTitle:  "BLK_BOARD",
   logoSource: "/BLK_BOARD_logo.jpg",
   styles:     [{src: "/style.css"},
                {src: "https://use.fontawesome.com/releases/v5.11.2/css/all.css"},
                {src: "https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:100"}],
   scripts:    [{src: "/index.js"}, {src: "/canvas.js"}, {src: "/neural.js"},
-               {src: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"}]
-=======
+               {src: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"}],
   siteTitle:   "Playground",
   logoSource:  "/benny.jpg",
   styles:      [{src: "/style.css"},
@@ -36,7 +35,6 @@ var indexContext = {
                 {src: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"}],
   initData:    "",
   initMessage: ""
->>>>>>> f6619e24ce1b60de736feac70e127df1c630a469
 };
 
 // Middleware functions
