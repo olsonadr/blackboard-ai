@@ -2,34 +2,62 @@
 
 <main class="content">
   <canvas id="first-canvas"></canvas>
-  <button type="button" id="clear-button">Clear</button>
-  <button type="button" id="predict-button">Predict</button>
-  <button type="button" id="save-button">Save</button>
-  <button type="button" id="load-button">Load</button>
 
-  <div id="save-modal" class="hidden">
-    <button type="button" id="save-modal-close-button">X</button> save modal
-    <form action="save" method="POST">
-      <label for="save-modal-text-input">File Name:</label>
-      <input type="text" name="fname" id="save-modal-text-input">
-      <input type="hidden" name="image" id="save-modal-image-data">
-      <button type="submit" id="save-modal-submit-button">Save file on server</button>
-    </form>
-  </div>
-  <div id="load-modal" class="hidden">
-    <button type="button" id="load-modal-close-button">X</button> load modal
-    <form action="load" method="POST">
-      <label for="load-modal-text-input">File Name:</label>
-      <input type="text" name="fname" id="load-modal-text-input">
-      <button type="submit" id="load-modal-submit-button">Load file from server</button>
-    </form>
+  <div id="side-bar">
+      <button type="button" class="side-button" id="draw-button">Draw</button>
+      <button type="button" class="side-button" id="erase-button">Erase</button>
+      <button type="button" class="side-button" id="select-button">Select</button>
+      <button type="button" class="side-button" id="clear-button">Clear</button>
+      <button type="button" class="side-button" id="predict-button">Predict</button>
+      <button type="button" class="side-button" id="save-button">Save</button>
+      <button type="button" class="side-button" id="load-button">Load</button>
   </div>
 
-  <div id="init-message-modal" class="hidden">
-    <button type="button" id="init-message-modal-close-button">X</button> initial message modal
-    <p id = "init-message-modal-text">{{initMessage}}</p>
+  <div id="save-modal" class="hidden modal-backdrop">
+      <div class="modal-container">
+        <a class="close" id="save-modal-close-button">x</a>
+        </br>
+        <h1 class="modal-title">Save Blackboard Image</h1>
+        <form action="save" method="POST">
+          <input type="text" name="fname" id="save-modal-text-input" placeholder="file name">
+          </br>
+          <button type="submit" class="modal-accept-button" id="save-modal-submit-button">Save file on server</button>
+          <input type="hidden" name="image" id="save-modal-image-data">
+        </form>
+      </div>
   </div>
 
-  <p class="hidden" id="init-data">{{initData}}</p>
-  <p class="hidden" id="init-message">{{initMessage}}</p>
+  <div class="hidden modal-backdrop" id="load-modal">
+    <div class="modal-container">
+        <a class="close" id="load-modal-close-button">x</a>
+        </br>
+        <h1 class="modal-title">Load Blackboard Image</h1>
+        <form action="load" method="POST">
+          <input type="text" name="fname" id="load-modal-text-input" placeholder="file name">
+          </br>
+          <button type="submit" class="modal-accept-button" id="load-modal-submit-button">Load file from server</button>
+        </form>
+    </div>
+  </div>
+
+  <div id="init-message-modal" class="hidden modal-backdrop">
+      <div class="modal-container">
+        <p id = "init-message-modal-text">{{initMessage}}</p>
+        </br>
+        <button type="button" class="modal-accept-button" id="init-message-modal-close-button">Okay</button>
+      </div>
+  </div>
+
+  <div id="predict-message-modal" class="hidden modal-backdrop">
+      <div class="modal-container">
+        <p id = "predict-message-modal-text">{{prediction}}</p>
+        </br>
+        <button type="button" class="modal-accept-button" id="predict-message-modal-close-button">Okay</button>
+      </div>
+  </div>
+
+  <div id="internal-elements">
+      <p class="hidden" id="init-data">{{initData}}</p>
+      <p class="hidden" id="init-message">{{initMessage}}</p>
+  </div>
 </main>

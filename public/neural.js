@@ -4,8 +4,8 @@ const modelPath         = "./saved/tfjsmodel/model.json"; //path.join(__dirname,
 const saveButton        = document.querySelector("#predict-button");
 const inputCanvas       = document.querySelector("#first-canvas");
 const ctx               = inputCanvas.getContext("2d");
-const inputCanvasWidth  = 400;
-const inputCanvasHeight = 400;
+const inputCanvasWidth  = window.innerWidth - 100;
+const inputCanvasHeight = window.innerHeight - 100;
 const targetWidth       = 400;
 const targetHeight      = 400;
 const labels            = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -34,6 +34,7 @@ let model;
 
   // Establish save on click functionality
   saveButton.onclick = () => {
+    openPredictMessageModal();
     isolateDigitsOnCanvas().then((isolatedDigits) => {
       // console.log(isolatedDigits);
       isolatedDigits.forEach((digit) => {
@@ -46,6 +47,13 @@ let model;
     });
   };
 })();
+
+function openPredictMessageModal() {
+    document.querySelector("#predict-message-modal").style.display = "block";
+}
+function closePredictMessageModal() {
+    document.querySelector("#predict-message-modal").style.display = "";
+}
 
 async function isolateDigitsOnCanvas() {
     // Variables
