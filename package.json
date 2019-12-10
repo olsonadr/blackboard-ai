@@ -10,7 +10,9 @@
     "neural3": "python3  utils/training.py 3  &&  mv -f MNIST_trained tfjsmodel public/saved",
     "neural5": "python3  utils/training.py 5  &&  mv -f MNIST_trained tfjsmodel public/saved",
     "neural10": "python3  utils/training.py 10 &&  mv -f MNIST_trained tfjsmodel public/saved",
-    "build": "npm install && rm -r -f public/saved; mkdir public/saved; pip3 install --user tensorflow tensorflowjs && npm run neural"
+    "build": "npm install && rm -r -f public/saved; mkdir public/saved; pip3 install --user tensorflow tensorflowjs && npm run neural",
+    "clean": "rm ./data/saved-states/* -f",
+    "clean-neural": "rm ./public/saved/* -f"
   },
   "repository": {
     "type": "git",

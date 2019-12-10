@@ -307,110 +307,6 @@ html {
   top:68px;
 }
 
-
-
-/* OLD */
-
-.filter-container {
-  display: inline-block;
-  min-width: 200px;
-  max-width: 200px;
-  margin: 10px 10px auto 10px;
-  padding: 20px;
-  border-radius: 3px;
-  background-color: #efefef;
-}
-
-.filter-container h2 {
-  margin: 0;
-}
-
-.filter-input-container {
-  width: 100%;
-  margin: 20px 0;
-  display: flex;
-  align-items: center;
-}
-
-.filter-input-element {
-  margin: 0 5px;
-  flex: 1 1 100%;
-}
-
-.filter-input {
-  font-size: 14px;
-  width: 100%;
-  margin-left: 10px;
-  padding: 3px;
-  border: 1px solid #dadada;
-  border-radius: 3px;
-}
-
-.filter-fieldset {
-  flex: 1 100%;
-  border: 1px solid #ababab;
-}
-
-.action-button {
-  font-size: 20px;
-  color: white;
-  padding: 10px;
-  background-color: #000;
-  border: 1px solid #ababab;
-  border-radius: 5px;
-  font-weight: lighter;
-  cursor: pointer;
-}
-
-.action-button:hover {
-  background-color: #f9d2b2;
-  border-color: #333;
-  color: #333;
-}
-
-#filter-update-button {
-  width: 100%;
-}
-
-.post {
-  display: inline-block;
-  vertical-align: top;
-  height: 300px;
-  width: 300px;
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid #dadada;
-  border-radius: 3px;
-}
-
-.post-contents {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-
-.post-image-container img {
-  max-height: 240px;
-  max-width: 300px;
-}
-
-.post-info-container {
-  width: 100%;
-  margin-top: 20px;
-}
-
-.post-price {
-  display: inline-block;
-  font-size: 80%;
-  padding: 3px;
-  margin: 3px 5px;
-  border: 1px solid #ababab;
-  border-radius: 3px;
-  background: #efefef;
-}
-
 /*
  * Modal stuff
  */
@@ -517,4 +413,108 @@ html {
 
 #modal-cancel:hover {
   background-color: #eee;
+}
+
+
+
+/* OLD */
+
+.filter-container {
+  display: inline-block;
+  min-width: 200px;
+  max-width: 200px;
+  margin: 10px 10px auto 10px;
+  padding: 20px;
+  border-radius: 3px;
+  background-color: #efefef;
+}
+
+.filter-container h2 {
+  margin: 0;
+}
+
+.filter-input-container {
+  width: 100%;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+}
+
+.filter-input-element {
+  margin: 0 5px;
+  flex: 1 1 100%;
+}
+
+.filter-input {
+  font-size: 14px;
+  width: 100%;
+  margin-left: 10px;
+  padding: 3px;
+  border: 1px solid #dadada;
+  border-radius: 3px;
+}
+
+.filter-fieldset {
+  flex: 1 100%;
+  border: 1px solid #ababab;
+}
+
+.action-button {
+  font-size: 20px;
+  color: white;
+  padding: 10px;
+  background-color: #000;
+  border: 1px solid #ababab;
+  border-radius: 5px;
+  font-weight: lighter;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #f9d2b2;
+  border-color: #333;
+  color: #333;
+}
+
+#filter-update-button {
+  width: 100%;
+}
+
+.post {
+  display: inline-block;
+  vertical-align: top;
+  height: 300px;
+  width: 300px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #dadada;
+  border-radius: 3px;
+}
+
+.post-contents {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.post-image-container img {
+  max-height: 240px;
+  max-width: 300px;
+}
+
+.post-info-container {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.post-price {
+  display: inline-block;
+  font-size: 80%;
+  padding: 3px;
+  margin: 3px 5px;
+  border: 1px solid #ababab;
+  border-radius: 3px;
+  background: #efefef;
 }

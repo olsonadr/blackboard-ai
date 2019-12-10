@@ -37,8 +37,14 @@ let model;
     predictButton.onclick = () => {
         let predictionResult;
 
+        // Open modal
+        document.querySelector("#predict-message-modal-text").textContent = "Loading...";
+        openPredictMessageModal(); // loading content
+
         // Isolate digits, then predict
-        (async function() {return isolateDigitsOnCanvas()})().then( (result) => {
+        (async function() {
+            return isolateDigitsOnCanvas();
+        })().then( (result) => {
 
           // Predict based on isolated canvases, then use predictions
           var isolatedDigits = result;
@@ -50,15 +56,26 @@ let model;
                       });
               });
               currPrediction = await predictArrayOfSquareCanvas(isolatedDigitCanvases);
-              // return currPrediction;
             })().then(() => {
                 // Use predictions (JOHN USE THEM HERE)
                 console.log(currPrediction);
+                //function concat array and then
+                document.querySelector("#predict-message-modal-text").textContent = concatArray(currPrediction);
+                ///insert display prediction functions
+                //
             });
         });
 
     };
 })();
+
+function concatArray(array){
+    let concat = "";
+    for(var i = 0; i < array.length; i++){
+        concat+=array[i];
+    }
+    return array.join(""); // this accomplishes what we want in one line
+}
 
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
@@ -68,9 +85,6 @@ async function asyncForEach(array, callback) {
 
 function openPredictMessageModal() {
     document.querySelector("#predict-message-modal").style.display = "block";
-}
-function closePredictMessageModal() {
-    document.querySelector("#predict-message-modal").style.display = "";
 }
 
 async function isolateDigitsOnCanvas() {
@@ -271,7 +285,7 @@ async function predictArrayOfSquareCanvas(canvasArray) {
 
 function clearCanvas(canvas) {
     let context = canvas.getContext('2d');
-    
+
     // Store the current transformation matrix
     context.save();
 

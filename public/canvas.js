@@ -5,7 +5,7 @@ const neuralCTX           = neuralCanvas.getContext("2d");
 var inputRect             = inputCanvas.getBoundingClientRect();
 var neuralRect            = neuralCanvas.getBoundingClientRect();
 const scale               = 1;
-var inputCanvasWidth      = Math.round(window.innerWidth - 110);
+var inputCanvasWidth      = Math.round(window.innerWidth - 112);
 var neuralCanvasWidth     = Math.round(window.innerHeight - 72);
 var inputCanvasHeight     = 400;
 var neuralCanvasHeight    = 400;
@@ -23,6 +23,7 @@ let prevSelect            = { x1: 0, y1: 0,
                               y2: inputCanvasHeight };
 
 let selectLineWidth       = 6;
+var resetting             = false;
 let prevEvent;
 let prevBrushUnderData;
 let prevSelectUnderData;
@@ -47,6 +48,9 @@ window.addEventListener("load", () => {
     const selectToolButton = document.querySelector("#select-button");
 
     clearButton.onclick = function () {
+        // Set that we are resetting
+        resetting = true;
+
         // Store the current transformation matrix
         inputCTX.save();
 
@@ -69,6 +73,11 @@ window.addEventListener("load", () => {
         firstSelect = true;
 
         removeSelectBox();
+
+        endDraw();
+
+        // Set that we are no longer resetting
+        resetting = false;
     };
 
     clearButton.click();
@@ -295,14 +304,8 @@ window.addEventListener("load", () => {
           topLeftX = (currSelect.x1 < currSelect.x2) ? (currSelect.x1) : (currSelect.x2);
           topLeftY = (currSelect.y1 < currSelect.y2) ? (currSelect.y1) : (currSelect.y2);
       }
-      //
-      // if (selectCleared == true) {
-      //     inputCTX.strokeStyle = bg;
-      //     inputCTX.fillRect(0, 0, inputCanvasWidth, inputCanvasHeight);
-      //     selectCleared = false;
-      // } else {
+
       inputCTX.putImageData(prevSelectUnderData, topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2);
-      // }
     }
 
     function endDraw() {
@@ -314,7 +317,7 @@ window.addEventListener("load", () => {
         var width = Math.abs(currSelect.x1 - currSelect.x2);
         var height = Math.abs(currSelect.y1 - currSelect.y2);
 
-        if(currTool == "select") {
+        if(currTool == "select" || resetting == true) {
           neuralCanvasWidth   = Math.abs(currSelect.x1 - currSelect.x2);
           neuralCanvasHeight  = Math.abs(currSelect.y1 - currSelect.y2);
 
@@ -356,11 +359,8 @@ function setSize() {
     var preResizeInputData  = inputCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
     var preResizeNeuralData = neuralCTX.getImageData(0, 0, neuralCanvasWidth, neuralCanvasHeight);
 
-    inputCanvasWidth   = Math.round(window.innerWidth * .8);
-    inputCanvasHeight  = 400;
-
-    neuralCanvasWidth   = Math.round(window.innerWidth * .8);
-    neuralCanvasHeight  = 400;
+    inputCanvasWidth   = Math.round(window.innerWidth - 112);
+    inputCanvasHeight  = Math.round(window.innerHeight - 72);
 
     inputCanvas.width = inputCanvasWidth;
     inputCanvas.height = inputCanvasHeight;

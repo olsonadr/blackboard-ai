@@ -50,7 +50,8 @@
 
   <div id="predict-message-modal" class="hidden modal-backdrop">
       <div class="modal-container">
-        <p id = "predict-message-modal-text">{{prediction}}</p>
+        <canvas id="neural-canvas"></canvas>
+        <p id="predict-message-modal-text">{{prediction}}</p>
         </br>
         <button type="button" class="modal-accept-button" id="predict-message-modal-close-button">Okay</button>
       </div>
@@ -59,6 +60,5 @@
   <div id="internal-elements">
       <p class="hidden" id="init-data">{{initData}}</p>
       <p class="hidden" id="init-message">{{initMessage}}</p>
-      <canvas class="hidden" id="neural-canvas"></canvas>
   </div>
 </main>
