@@ -1,4 +1,2 @@
 node_modules
-public/saved/MNIST_trained
-public/saved/tfjsmodel
 data/saved-states
