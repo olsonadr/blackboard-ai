@@ -1,10 +1,10 @@
 
 // Global variables
 const modelPath         = "./saved/tfjsmodel/model.json"; //path.join(__dirname, 'tfjsmodel', 'model.json');
-const saveButton        = document.querySelector("#save-button");
+const saveButton        = document.querySelector("#predict-button");
 const inputCanvas       = document.querySelector("#first-canvas");
 const ctx               = inputCanvas.getContext("2d");
-const inputCanvasWidth  = 1200;
+const inputCanvasWidth  = 400;
 const inputCanvasHeight = 400;
 const targetWidth       = 400;
 const targetHeight      = 400;
