@@ -66,6 +66,13 @@ async function asyncForEach(array, callback) {
   }
 }
 
+function openPredictMessageModal() {
+    document.querySelector("#predict-message-modal").style.display = "block";
+}
+function closePredictMessageModal() {
+    document.querySelector("#predict-message-modal").style.display = "";
+}
+
 async function isolateDigitsOnCanvas() {
     // Variables
     var listOfDigits = [];
@@ -264,6 +271,7 @@ async function predictArrayOfSquareCanvas(canvasArray) {
 
 function clearCanvas(canvas) {
     let context = canvas.getContext('2d');
+    
     // Store the current transformation matrix
     context.save();
 

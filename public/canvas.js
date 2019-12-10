@@ -5,8 +5,8 @@ const neuralCTX           = neuralCanvas.getContext("2d");
 var inputRect             = inputCanvas.getBoundingClientRect();
 var neuralRect            = neuralCanvas.getBoundingClientRect();
 const scale               = 1;
-var inputCanvasWidth      = Math.round(window.innerWidth * .8);
-var neuralCanvasWidth     = Math.round(window.innerWidth * .8);
+var inputCanvasWidth      = Math.round(window.innerWidth - 110);
+var neuralCanvasWidth     = Math.round(window.innerHeight - 72);
 var inputCanvasHeight     = 400;
 var neuralCanvasHeight    = 400;
 const bg                  = "#000000";
@@ -27,6 +27,9 @@ let prevEvent;
 let prevBrushUnderData;
 let prevSelectUnderData;
 
+inputCanvas.style.width = (inputCanvas.width * scale) + "px";
+inputCanvas.style.height = (inputCanvas.height * scale) + "px";
+
 window.addEventListener("load", () => {
     setSize();
 
@@ -39,9 +42,9 @@ window.addEventListener("load", () => {
 
     const clearButton      = document.querySelector("#clear-button");
     const predictButton    = document.querySelector("#predict-button");
-    const drawToolButton   = document.querySelector("#draw-tool-button");
-    const eraseToolButton  = document.querySelector("#erase-tool-button");
-    const selectToolButton = document.querySelector("#select-tool-button");
+    const drawToolButton   = document.querySelector("#draw-button");
+    const eraseToolButton  = document.querySelector("#erase-button");
+    const selectToolButton = document.querySelector("#select-button");
 
     clearButton.onclick = function () {
         // Store the current transformation matrix
@@ -92,6 +95,65 @@ window.addEventListener("load", () => {
     };
 
     drawToolButton.click();
+
+    // Load initial data
+    if (document.querySelector("#init-data").textContent != "") {
+        var initImage = new Image;
+        initImage.src = document.querySelector("#init-data").textContent;
+        initImage.onload = function() {
+            inputCTX.drawImage(initImage, 0, 0);
+        }
+    }
+
+    // Show initial message modal
+    if (document.querySelector("#init-message").textContent != "") {
+        document.querySelector("#init-message-modal").style.display = "block";
+    }
+
+    // Save and load modals
+    document.querySelector("#save-button").onclick = openSaveModal;
+    document.querySelector("#load-button").onclick = openLoadModal;
+    document.querySelector("#save-modal-close-button").onclick = closeSaveModal;
+    document.querySelector("#load-modal-close-button").onclick = closeLoadModal;
+    document.querySelector("#init-message-modal-close-button").onclick = closeInitMessageModal;
+    document.querySelector("#predict-message-modal-close-button").onclick = closePredictMessageModal;
+
+    document.querySelectorAll(".modal-backdrop").forEach((item) => {
+        item.addEventListener("click", () => {
+            closeLoadModal();
+            closeSaveModal();
+            closeInitMessageModal();
+            closePredictMessageModal();
+        });
+    });
+
+    document.querySelectorAll(".modal-container").forEach((item) => {
+        item.addEventListener("click", (ev) => { ev.stopPropagation(); }, false);
+    });
+
+    function openSaveModal() {
+        document.querySelector("#save-modal").style.display = "block";
+    }
+    function closeSaveModal() {
+        document.querySelector("#save-modal").style.display = "";
+        document.querySelector("#save-modal-text-input").value = "";
+    }
+
+    function openLoadModal() {
+        document.querySelector("#load-modal").style.display = "block";
+    }
+    function closeLoadModal() {
+        document.querySelector("#load-modal").style.display = "";
+        document.querySelector("#load-modal-text-input").value = "";
+    }
+
+    function closeInitMessageModal() {
+        document.querySelector("#init-message-modal").style.display = "";
+    }
+
+    function closePredictMessageModal() {
+        document.querySelector("#predict-message-modal").style.display = "";
+    }
 
     function startDraw(e) {
         let mouseX = (e.clientX - inputRect.left + scrollX) / scale;
@@ -278,6 +340,13 @@ window.addEventListener("load", () => {
                                                      topLeftY + selectLineWidth,
                                                      width - selectLineWidth * 2,
                                                      height - selectLineWidth * 2), 0, 0);
+
+        inputCTX.beginPath(); // maybe delete
+        storeSaveData(); // maybe delete
+    }
+
+    function storeSaveData() {
+         document.querySelector("#save-modal-image-data").value = inputCanvas.toDataURL();
     }
 });
 
