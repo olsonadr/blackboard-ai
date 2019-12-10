@@ -35,7 +35,7 @@ app.use(express.static(publicDir));
 app.post('/save', function(req, res, next) {
     console.log(`Saving data in ${req.body.fname}.json`)
     var newEntry = JSON.stringify({ name: req.body.fname, data: req.body.image });
-    fs.writeFileSync(`data/saved-states/${req.body.fname}.json`, newEntry);
+    fs.writeFileSync(`${__dirname}/data/saved-states/${req.body.fname}.json`, newEntry);
     indexContext.initData = req.body.image;
     indexContext.initMessage = `Saved data as \"${req.body.fname}\".`;
     res.render('index', indexContext);
