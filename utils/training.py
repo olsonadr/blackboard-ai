@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/local/bin/python3
 
 import tensorflow as tf
 import tensorflowjs as tfjs

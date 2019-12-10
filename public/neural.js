@@ -1,9 +1,9 @@
 
 // Global variables
 const modelPath         = "./saved/tfjsmodel/model.json"; //path.join(__dirname, 'tfjsmodel', 'model.json');
-const saveButton        = document.querySelector("#save-button");
-const neuralCanvas       = document.querySelector("#neural-canvas");
-const neuralCTX               = neuralCanvas.getContext("2d");
+const predictButton     = document.querySelector("#predict-button");
+const neuralCanvas      = document.querySelector("#neural-canvas");
+const neuralCTX         = neuralCanvas.getContext("2d");
 const inputCanvasWidth  = Math.round(window.innerWidth * .8);
 const inputCanvasHeight = 400;
 const targetWidth       = 400;
@@ -34,7 +34,7 @@ let model;
     });
 
     // Establish save on click functionality
-    saveButton.onclick = () => {
+    predictButton.onclick = () => {
         let predictionResult;
 
         // Isolate digits, then predict
