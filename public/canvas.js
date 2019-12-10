@@ -1,44 +1,102 @@
 window.addEventListener("load", () => {
-    const canvas  = document.querySelector("#first-canvas");
-    const ctx     = canvas.getContext("2d");
-    const rect    = canvas.getBoundingClientRect();
+    const inputCanvas  = document.querySelector("#first-canvas");
+    const ctx     = inputCanvas.getContext("2d");
+    const rect    = inputCanvas.getBoundingClientRect();
     const scale   = 1;
-    const width   = 1200;
-    const height  = 400;
+    const width   = Math.round(window.innerWidth - 110);
+    const height  = Math.round(window.innerHeight - 72);
+    const inputCTX     = inputCanvas.getContext("2d");
+    var inputCanvasWidth = 400;
+    var inputCanvasHeight = 400;
     const bg      = "#000000";
     const fg      = "#FFFFFF";
 
-    canvas.width = width;
-    canvas.height = height;
+    inputCanvas.width = width;
+    inputCanvas.height = height;
 
-    canvas.style.width = (canvas.width * scale) + "px";
-    canvas.style.height = (canvas.height * scale) + "px";
+    inputCanvas.style.width = (inputCanvas.width * scale) + "px";
+    inputCanvas.style.height = (inputCanvas.height * scale) + "px";
 
     let drawing = false;
 
-    canvas.addEventListener("mousedown",  startDraw);
-    canvas.addEventListener("mousemove",  draw);
-    canvas.addEventListener("mouseup",    endDraw);
+    inputCanvas.addEventListener("mousedown",  startDraw);
+    inputCanvas.addEventListener("mousemove",  draw);
+    inputCanvas.addEventListener("mouseup",    endDraw);
 
     const clear = document.querySelector("#clear-button");
-    const save  = document.querySelector("#save-button");
+    const predict  = document.querySelector("#predict-button");
 
     ctx.strokeStyle = bg;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
 
     clear.onclick = function () {
         // Store the current transformation matrix
         ctx.save();
 
-        // Use the identity matrix while clearing the canvas
+        // Use the identity matrix while clearing the inputCanvas
         ctx.strokeStyle = bg;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
 
         // Restore the transform
         ctx.restore();
     };
+
+    // Load initial data
+    if (document.querySelector("#init-data").textContent != "") {
+        var initImage = new Image;
+        initImage.src = document.querySelector("#init-data").textContent;
+        initImage.onload = function() {
+            inputCTX.drawImage(initImage, 0, 0);
+        }
+    }
+
+    // Show initial message modal
+    if (document.querySelector("#init-message").textContent != "") {
+        document.querySelector("#init-message-modal").style.display = "block";
+    }
+
+    // Save and load modals
+    document.querySelector("#save-button").onclick = openSaveModal;
+    document.querySelector("#load-button").onclick = openLoadModal;
+    document.querySelector("#save-modal-close-button").onclick = closeSaveModal;
+    document.querySelector("#load-modal-close-button").onclick = closeLoadModal;
+    document.querySelector("#init-message-modal-close-button").onclick = closeInitMessageModal;
+    document.querySelector("#predict-message-modal-close-button").onclick = closePredictMessageModal;
+
+    document.querySelectorAll(".modal-backdrop").forEach((item) => {
+        item.addEventListener("click", () => {
+            closeLoadModal();
+            closeSaveModal();
+            closeInitMessageModal();
+            closePredictMessageModal();
+        });
+    });
+
+    document.querySelectorAll(".modal-container").forEach((item) => {
+        item.addEventListener("click", (ev) => { ev.stopPropagation(); }, false);
+    });
+
+    function openSaveModal() {
+        document.querySelector("#save-modal").style.display = "block";
+    }
+    function closeSaveModal() {
+        document.querySelector("#save-modal").style.display = "";
+        document.querySelector("#save-modal-text-input").value = "";
+    }
+
+    function openLoadModal() {
+        document.querySelector("#load-modal").style.display = "block";
+    }
+    function closeLoadModal() {
+        document.querySelector("#load-modal").style.display = "";
+        document.querySelector("#load-modal-text-input").value = "";
+    }
+
+    function closeInitMessageModal() {
+        document.querySelector("#init-message-modal").style.display = "";
+    }
 
     function startDraw (e) {
         drawing = true;
@@ -64,6 +122,11 @@ window.addEventListener("load", () => {
     function endDraw() {
         drawing = false;
         ctx.beginPath();
+        storeSaveData();
+    }
+
+    function storeSaveData() {
+        document.querySelector("#save-modal-image-data").value = inputCanvas.toDataURL();
     }
 });
 
