@@ -18,23 +18,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Context for html rendering
 var indexContext = {
-
-  siteTitle:  "BLK_BOARD",
-  logoSource: "/BLK_BOARD_logo.jpg",
-  styles:     [{src: "/style.css"},
-               {src: "https://use.fontawesome.com/releases/v5.11.2/css/all.css"},
-               {src: "https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:100"}],
-  scripts:    [{src: "/index.js"}, {src: "/canvas.js"}, {src: "/neural.js"},
-               {src: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"}],
-  siteTitle:   "Playground",
-  logoSource:  "/benny.jpg",
-  styles:      [{src: "/style.css"},
-                {src: "https://use.fontawesome.com/releases/v5.11.2/css/all.css"},
-                {src: "https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:100"}],
-  scripts:     [{src: "/index.js"}, {src: "/canvas.js"}, {src: "/neural.js"},
-                {src: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"}],
-  initData:    "",
-  initMessage: ""
+    siteTitle:  "BLK_BOARD",
+    logoSource: "/BLK_BOARD_logo.jpg",
+    styles:      [{src: "/style.css"},
+                  {src: "https://use.fontawesome.com/releases/v5.11.2/css/all.css"},
+                  {src: "https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:100"}],
+    scripts:     [{src: "/index.js"}, {src: "/canvas.js"}, {src: "/neural.js"},
+                  {src: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"}],
+    initData:    "",
+    initMessage: ""
 };
 
 // Middleware functions
@@ -42,7 +34,7 @@ app.use(express.static(publicDir));
 app.post('/save', function(req, res, next) {
     console.log(`Saving data in ${req.body.fname}.json`)
     var newEntry = JSON.stringify({ name: req.body.fname, data: req.body.image });
-    fs.writeFileSync(`data/saved-states/${req.body.fname}.json`, newEntry);
+    fs.writeFileSync(`${__dirname}/data/saved-states/${req.body.fname}.json`, newEntry);
     indexContext.initData = req.body.image;
     indexContext.initMessage = `Saved data as \"${req.body.fname}\".`;
     res.render('index', indexContext);
