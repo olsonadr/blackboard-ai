@@ -16,8 +16,8 @@ app.set('view engine', 'handlebars');
 
 // Context for html rendering
 var indexContext = {
-  siteTitle:  "Playground",
-  logoSource: "/benny.jpg",
+  siteTitle:  "BLK_BOARD",
+  logoSource: "/BLK_BOARD_logo.jpg",
   styles:     [{src: "/style.css"},
                {src: "https://use.fontawesome.com/releases/v5.11.2/css/all.css"},
                {src: "https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:100"}],
