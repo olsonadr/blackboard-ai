@@ -274,7 +274,10 @@ window.addEventListener("load", () => {
         }
 
         neuralCTX.strokeStyle = fg;
-        neuralCTX.putImageData(inputCTX.getImageData(topLeftX, topLeftY, width, height), 0, 0);
+        neuralCTX.putImageData(inputCTX.getImageData(topLeftX + selectLineWidth,
+                                                     topLeftY + selectLineWidth,
+                                                     width - selectLineWidth * 2,
+                                                     height - selectLineWidth * 2), 0, 0);
     }
 });
 
