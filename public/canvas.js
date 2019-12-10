@@ -1,47 +1,100 @@
+const inputCanvas         = document.querySelector("#first-canvas");
+const neuralCanvas        = document.querySelector("#neural-canvas");
+const inputCTX            = inputCanvas.getContext("2d");
+const neuralCTX           = neuralCanvas.getContext("2d");
+var inputRect             = inputCanvas.getBoundingClientRect();
+var neuralRect            = neuralCanvas.getBoundingClientRect();
+const scale               = 1;
+var inputCanvasWidth      = Math.round(window.innerWidth - 110);
+var neuralCanvasWidth     = Math.round(window.innerHeight - 72);
+var inputCanvasHeight     = 400;
+var neuralCanvasHeight    = 400;
+const bg                  = "#000000";
+const fg                  = "#FFFFFF";
+var currTool              = "draw";
+let firstCursor           = true;
+let firstSelect           = true;
+let selectCleared         = false;
+let currSelect            = { x1: 0, y1: 0,
+                              x2: inputCanvasWidth,
+                              y2: inputCanvasHeight };
+let prevSelect            = { x1: 0, y1: 0,
+                              x2: inputCanvasWidth,
+                              y2: inputCanvasHeight };
+
+let selectLineWidth       = 6;
+let prevEvent;
+let prevBrushUnderData;
+let prevSelectUnderData;
+
+inputCanvas.style.width = (inputCanvas.width * scale) + "px";
+inputCanvas.style.height = (inputCanvas.height * scale) + "px";
+
 window.addEventListener("load", () => {
-    const inputCanvas  = document.querySelector("#first-canvas");
-    const ctx     = inputCanvas.getContext("2d");
-    const rect    = inputCanvas.getBoundingClientRect();
-    const scale   = 1;
-    const width   = Math.round(window.innerWidth - 110);
-    const height  = Math.round(window.innerHeight - 72);
-    const inputCTX     = inputCanvas.getContext("2d");
-    var inputCanvasWidth = 400;
-    var inputCanvasHeight = 400;
-    const bg      = "#000000";
-    const fg      = "#FFFFFF";
-
-    inputCanvas.width = width;
-    inputCanvas.height = height;
-
-    inputCanvas.style.width = (inputCanvas.width * scale) + "px";
-    inputCanvas.style.height = (inputCanvas.height * scale) + "px";
+    setSize();
 
     let drawing = false;
 
     inputCanvas.addEventListener("mousedown",  startDraw);
     inputCanvas.addEventListener("mousemove",  draw);
     inputCanvas.addEventListener("mouseup",    endDraw);
+    inputCanvas.addEventListener("mouseout",   removeCursor);
 
-    const clear = document.querySelector("#clear-button");
-    const predict  = document.querySelector("#predict-button");
+    const clearButton      = document.querySelector("#clear-button");
+    const predictButton    = document.querySelector("#predict-button");
+    const drawToolButton   = document.querySelector("#draw-button");
+    const eraseToolButton  = document.querySelector("#erase-button");
+    const selectToolButton = document.querySelector("#select-button");
 
-    ctx.strokeStyle = bg;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
-
-    clear.onclick = function () {
+    clearButton.onclick = function () {
         // Store the current transformation matrix
-        ctx.save();
+        inputCTX.save();
 
         // Use the identity matrix while clearing the inputCanvas
-        ctx.strokeStyle = bg;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
+        inputCTX.strokeStyle = bg;
+        inputCTX.setTransform(1, 0, 0, 1, 0, 0);
+        inputCTX.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
 
         // Restore the transform
-        ctx.restore();
+        inputCTX.restore();
+
+        // Reset select box
+        currSelect = { x1: 0, y1: 0,
+                       x2: inputCanvasWidth,
+                       y2: inputCanvasHeight };
+        prevSelect = { x1: 0, y1: 0,
+                       x2: inputCanvasWidth,
+                       y2: inputCanvasHeight };
+        prevSelectUnderData = inputCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
+        firstSelect = true;
+
+        removeSelectBox();
     };
+
+    clearButton.click();
+
+    drawToolButton.onclick = function () {
+        currTool = 'draw';
+        inputCTX.lineWidth = 20;
+        inputCTX.lineCap = "round";
+        inputCTX.strokeStyle = fg;
+    };
+
+    eraseToolButton.onclick = function () {
+        currTool = 'erase';
+        inputCTX.lineWidth = 40;
+        inputCTX.lineCap = "round";
+        inputCTX.strokeStyle = bg;
+    };
+
+    selectToolButton.onclick = function () {
+        currTool = 'select';
+        inputCTX.lineWidth = selectLineWidth;
+        inputCTX.lineCap = "round";
+        inputCTX.strokeStyle = fg;
+    };
+
+    drawToolButton.click();
 
     // Load initial data
     if (document.querySelector("#init-data").textContent != "") {
@@ -98,36 +151,240 @@ window.addEventListener("load", () => {
         document.querySelector("#init-message-modal").style.display = "";
     }
 
-    function startDraw (e) {
+    function closePredictMessageModal() {
+        document.querySelector("#predict-message-modal").style.display = "";
+    }
+
+    function startDraw(e) {
+        let mouseX = (e.clientX - inputRect.left + scrollX) / scale;
+        let mouseY = (e.clientY - inputRect.top + scrollY)  / scale;
+
         drawing = true;
-        draw(e);
+        inputCTX.beginPath();
+        if (currTool == 'draw') {
+            inputCTX.lineWidth = 20;
+            inputCTX.lineCap = "round";
+            inputCTX.strokeStyle = fg;
+            inputCTX.beginPath();
+            inputCTX.moveTo(mouseX - inputCTX.lineWidth / 4, mouseY);
+            drawBrush(e);
+        } else if (currTool == 'erase') {
+            inputCTX.lineWidth = 40;
+            inputCTX.lineCap = "round";
+            inputCTX.strokeStyle = bg;
+            inputCTX.beginPath();
+            inputCTX.moveTo(mouseX - inputCTX.lineWidth / 4, mouseY);
+            drawBrush(e);
+        } else if (currTool == 'select') {
+            // select stuff
+            prevSelect.x1 = currSelect.x1;
+            prevSelect.y1 = currSelect.y1;
+            prevSelect.x2 = currSelect.x2;
+            prevSelect.y2 = currSelect.y2;
+            currSelect.x1 = (e.clientX - inputRect.left + scrollX) / scale;
+            currSelect.y1 = (e.clientY - inputRect.top + scrollY)  / scale;
+            currSelect.x2 = (e.clientX - inputRect.left + scrollX) / scale;
+            currSelect.y2 = (e.clientY - inputRect.top + scrollY)  / scale;
+            firstSelect = true;
+            inputCTX.lineWidth = selectLineWidth;
+            inputCTX.lineCap = "round";
+            inputCTX.strokeStyle = fg;
+            drawSelect(e);
+        }
     }
 
     function draw(e) {
-        if (!drawing) return;
+        switch(currTool) {
+            case 'draw':
+            case 'erase':
+                drawBrush(e);
+                break;
+            case 'select':
+                drawSelect(e);
+                break;
+            default:
+                break;
+        }
+    }
 
-        ctx.lineWidth = 20;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = fg;
+    function drawBrush(e) {
+        let mouseX = (e.clientX - inputRect.left + scrollX) / scale;
+        let mouseY = (e.clientY - inputRect.top + scrollY)  / scale;
 
-        let mouseX = (e.clientX - rect.left + scrollX) / scale;
-        let mouseY = (e.clientY - rect.top + scrollY) / scale;
+        if (drawing) {
+            // Get content underneath cursor
+            prevBrushUnderData = inputCTX.getImageData(mouseX - inputCTX.lineWidth, mouseY - inputCTX.lineWidth, inputCTX.lineWidth * 2, inputCTX.lineWidth * 2);
 
-        ctx.lineTo(mouseX, mouseY);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(mouseX, mouseY);
+            inputCTX.lineTo(mouseX - inputCTX.lineWidth / 4, mouseY);
+            inputCTX.stroke();
+            inputCTX.beginPath();
+            inputCTX.moveTo(mouseX - inputCTX.lineWidth / 4, mouseY);
+        } else {
+            removeCursor(e);
+
+            // Get content underneath cursor
+            prevBrushUnderData = inputCTX.getImageData(mouseX - inputCTX.lineWidth, mouseY - inputCTX.lineWidth, inputCTX.lineWidth * 2, inputCTX.lineWidth * 2);
+
+            // Draw circle
+            inputCTX.beginPath();
+            inputCTX.arc(mouseX - inputCTX.lineWidth / 4, mouseY, inputCTX.lineWidth / 2 - 2, Math.PI/3, true);
+            var previous = inputCTX.lineWidth;
+            inputCTX.lineWidth = 1;
+            inputCTX.strokeStyle = "#FFFFFF";
+            inputCTX.stroke();
+            inputCTX.lineWidth = previous;
+        }
+
+        // Store this event
+        prevEvent = e;
+    }
+
+    function removeCursor(e) {
+      // Replace stuff underneath previous event
+      if (firstCursor || prevEvent == undefined) {
+          inputCTX.fillStyle = "#000000";
+          inputCTX.fillRect((e.clientX - inputRect.left + scrollX) / scale - inputCTX.lineWidth, (e.clientY - inputRect.top + scrollY) / scale - inputCTX.lineWidth, inputCTX.lineWidth, inputCTX.lineWidth)
+          firstCursor = false;
+      }
+      else {
+        inputCTX.putImageData(prevBrushUnderData, (prevEvent.clientX - inputRect.left + scrollX) / scale - inputCTX.lineWidth, (prevEvent.clientY - inputRect.top + scrollY)  / scale - inputCTX.lineWidth);
+      }
+    }
+
+    function drawSelect(e) {
+      let mouseX = (e.clientX - inputRect.left + scrollX) / scale;
+      let mouseY = (e.clientY - inputRect.top + scrollY)  / scale;
+
+      // // First ever select box
+      // if (prevSelectUnderData == undefined) {
+      //     prevSelectUnderData = inputCTX.getImageData(0, 0, inputCanvasWidth - 1, inputCanvasHeight - 1);
+      // }
+
+      // Clear previous rectangle
+      removeSelectBox();
+
+      if (drawing && currTool == 'select') {
+          currSelect.x2 = mouseX;
+          currSelect.y2 = mouseY;
+      }
+
+      // Establish dims
+      var topLeftX = (currSelect.x1 < currSelect.x2) ? (currSelect.x1) : (currSelect.x2);
+      var topLeftY = (currSelect.y1 < currSelect.y2) ? (currSelect.y1) : (currSelect.y2);
+      var width = Math.abs(currSelect.x1 - currSelect.x2);
+      var height = Math.abs(currSelect.y1 - currSelect.y2);
+
+      // Get content underneath selection
+      prevSelectUnderData = inputCTX.getImageData(topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2,
+                                                  width + selectLineWidth * 4, height + selectLineWidth * 4);
+
+      // Draw current selection
+      inputCTX.beginPath();
+      inputCTX.rect(topLeftX, topLeftY, width, height)
+      inputCTX.stroke();
+    }
+
+    function removeSelectBox() {
+      // Replace stuff underneath previous event
+      let topLeftX, topLeftY;
+      if(firstSelect == true) {
+          topLeftX = (prevSelect.x1 < prevSelect.x2) ? (prevSelect.x1) : (prevSelect.x2);
+          topLeftY = (prevSelect.y1 < prevSelect.y2) ? (prevSelect.y1) : (prevSelect.y2);
+          firstSelect = false;
+      } else {
+          topLeftX = (currSelect.x1 < currSelect.x2) ? (currSelect.x1) : (currSelect.x2);
+          topLeftY = (currSelect.y1 < currSelect.y2) ? (currSelect.y1) : (currSelect.y2);
+      }
+      //
+      // if (selectCleared == true) {
+      //     inputCTX.strokeStyle = bg;
+      //     inputCTX.fillRect(0, 0, inputCanvasWidth, inputCanvasHeight);
+      //     selectCleared = false;
+      // } else {
+      inputCTX.putImageData(prevSelectUnderData, topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2);
+      // }
     }
 
     function endDraw() {
         drawing = false;
-        ctx.beginPath();
-        storeSaveData();
+        inputCTX.beginPath();
+
+        let topLeftX = ((currSelect.x1 < currSelect.x2) ? (currSelect.x1) : (currSelect.x2));
+        let topLeftY = ((currSelect.y1 < currSelect.y2) ? (currSelect.y1) : (currSelect.y2));
+        var width = Math.abs(currSelect.x1 - currSelect.x2);
+        var height = Math.abs(currSelect.y1 - currSelect.y2);
+
+        if(currTool == "select") {
+          neuralCanvasWidth   = Math.abs(currSelect.x1 - currSelect.x2);
+          neuralCanvasHeight  = Math.abs(currSelect.y1 - currSelect.y2);
+
+          neuralCanvas.width = neuralCanvasWidth;
+          neuralCanvas.height = neuralCanvasHeight;
+
+          neuralCanvas.style.width = (neuralCanvasWidth * scale) + "px";
+          neuralCanvas.style.height = (neuralCanvasHeight * scale) + "px";
+
+          neuralRect = neuralCanvas.getBoundingClientRect();
+
+          neuralCTX.strokeStyle = bg;
+          neuralCTX.setTransform(1, 0, 0, 1, 0, 0);
+          neuralCTX.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+        }
+        else {
+          prevSelectUnderData = inputCTX.getImageData(topLeftX - selectLineWidth * 2, topLeftY - selectLineWidth * 2,
+                                                      width + selectLineWidth * 4, height + selectLineWidth * 4);
+        }
+
+        neuralCTX.strokeStyle = fg;
+        neuralCTX.putImageData(inputCTX.getImageData(topLeftX + selectLineWidth,
+                                                     topLeftY + selectLineWidth,
+                                                     width - selectLineWidth * 2,
+                                                     height - selectLineWidth * 2), 0, 0);
+
+        inputCTX.beginPath(); // maybe delete
+        storeSaveData(); // maybe delete
     }
 
     function storeSaveData() {
-        document.querySelector("#save-modal-image-data").value = inputCanvas.toDataURL();
+         document.querySelector("#save-modal-image-data").value = inputCanvas.toDataURL();
     }
 });
 
-console.log('Canvas is up and running!');
+window.onresize = setSize;
+
+function setSize() {
+    var preResizeInputData  = inputCTX.getImageData(0, 0, inputCanvasWidth, inputCanvasHeight);
+    var preResizeNeuralData = neuralCTX.getImageData(0, 0, neuralCanvasWidth, neuralCanvasHeight);
+
+    inputCanvasWidth   = Math.round(window.innerWidth * .8);
+    inputCanvasHeight  = 400;
+
+    neuralCanvasWidth   = Math.round(window.innerWidth * .8);
+    neuralCanvasHeight  = 400;
+
+    inputCanvas.width = inputCanvasWidth;
+    inputCanvas.height = inputCanvasHeight;
+    neuralCanvas.width = neuralCanvasWidth;
+    neuralCanvas.height = neuralCanvasHeight;
+
+    inputCanvas.style.width = (inputCanvasWidth * scale) + "px";
+    inputCanvas.style.height = (inputCanvasHeight * scale) + "px";
+    neuralCanvas.style.width = (neuralCanvasWidth * scale) + "px";
+    neuralCanvas.style.height = (neuralCanvasHeight * scale) + "px";
+
+    inputRect = inputCanvas.getBoundingClientRect();
+    neuralRect = neuralCanvas.getBoundingClientRect();
+
+    inputCTX.strokeStyle = bg;
+    inputCTX.setTransform(1, 0, 0, 1, 0, 0);
+    inputCTX.fillRect(0, 0, inputCanvas.width, inputCanvas.height);
+
+    neuralCTX.strokeStyle = bg;
+    neuralCTX.setTransform(1, 0, 0, 1, 0, 0);
+    neuralCTX.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+
+    inputCTX.putImageData(preResizeInputData, 0, 0);
+    neuralCTX.putImageData(preResizeNeuralData, 0, 0);
+}
+
+console.log('inputCanvas is up and running!');
