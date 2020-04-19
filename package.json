@@ -4,21 +4,17 @@
   "description": "Overall package for the webdev final project",
   "main": "./server.js",
   "scripts": {
-    "help": "printf \"help\"",
-    "start": "PORT=49999 node server.js",
-    "neural": "python3  utils/training.py 5  &&  mv -f MNIST_trained tfjsmodel public/saved",
-    "neural3": "python3  utils/training.py 3  &&  mv -f MNIST_trained tfjsmodel public/saved",
-    "neural5": "python3  utils/training.py 5  &&  mv -f MNIST_trained tfjsmodel public/saved",
-    "neural10": "python3  utils/training.py 10 &&  mv -f MNIST_trained tfjsmodel public/saved",
-    "build": "npm install && rm -r -f public/saved; mkdir public/saved; pip3 install --user tensorflow tensorflowjs && npm run neural",
-    "clean": "rm ./data/saved-states/* -f -r",
-    "clean-neural": "rm ./public/saved/* -f -r"
+    "start": "node server.js",
+    "clean-states": "rm ./data/saved-states/* -r",
+    "clean-neural": "rm ./public/saved/* -r",
+    "build-neural": "python3 utils/training.py 5 public/saved",
+    "release-setup": "npm run clean-neural; npm run build-neural"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/olsonadr/webdev-final-project.git"
   },
-  "author": "Nicholas Olson, Pierre Carr",
+  "author": "Nicholas Olson, Pierre Carr, JC Zontos",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/olsonadr/webdev-final-project/issues"

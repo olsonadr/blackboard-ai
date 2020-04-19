@@ -5,8 +5,12 @@ import tensorflowjs as tfjs
 import numpy as np
 import sys
 
+args = sys.argv
+
+num_epochs = (int(sys.argv[1])) if (len(args) > 0) else (5)
+modelOutDir = (args[2]) if (len(args) > 1) else (".")
+
 mnist = tf.keras.datasets.mnist
-num_epochs = (int(sys.argv[1])) if (sys.argv[0]) else (5)
 
 (training_data, training_labels), (test_data, test_labels) = mnist.load_data()
 
@@ -33,5 +37,5 @@ model.fit(training_data, training_labels, epochs = num_epochs)
 
 # score = model.evaluate(test_data, test_labels)
 # print(score)
-model.save("MNIST_trained")
-tfjs.converters.save_keras_model(model, "tfjsmodel")
+model.save((modelOutDir + "/MNIST_trained"))
+tfjs.converters.save_keras_model(model, (modelOutDir + "/tfjsmodel"))
