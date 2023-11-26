@@ -82,15 +82,6 @@ RUN pipenv run python3 utils/training.py 5 public/saved
 
 
 ################################################################################
-# Create a stage for building the application (currently just copies the files
-# needed by the dynamic server as no static compilation is implemented).
-FROM pip_deps as build_model
-
-# Copy the source files into the image.
-COPY . .
-
-
-################################################################################
 # Create a new stage to run the application with minimal runtime dependencies
 # where the necessary files are copied from the build stage.
 FROM node_base as final
