@@ -1,12 +1,13 @@
 {
   "name": "webdev-final-project",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Overall package for the webdev final project",
   "main": "./server.js",
   "scripts": {
     "start": "node server.js",
-    "clean-states": "rm ./data/saved-states/* -r",
-    "clean-neural": "rm ./public/saved/* -r",
+    "build": "python3 utils/training.py 5 public/saved",
+    "clean-states": "rm ./data/saved-states/* -rf",
+    "clean-neural": "rm ./public/saved/* -rf",
     "build-neural": "python3 utils/training.py 5 public/saved",
     "release-setup": "npm run clean-neural; npm run build-neural"
   },

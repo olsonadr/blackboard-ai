@@ -1,0 +1,10 @@
+version: '0.1.0'
+
+services:
+  app:
+    image: olsonadr/blackboard-ai
+    container_name: blackboard-ai
+    build:
+      context: .
+    ports:
+      - 3000:3000
