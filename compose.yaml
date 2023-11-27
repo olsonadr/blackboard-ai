@@ -8,3 +8,9 @@ services:
       context: .
     ports:
       - 3000:3000
+    volumes:
+      - saved-data:/var/lib/blackboard/data
+
+
+volumes:
+  saved-data:

@@ -100,6 +100,11 @@ COPY --from=build_app /usr/src/app .
 COPY --from=npm_deps /usr/src/app/node_modules ./node_modules
 COPY --from=build_model /usr/src/app/public/saved ./public/saved
 
+# Allow writing to the saved-states dir
+USER root
+RUN chown node:node /usr/src/app/data/saved-states
+USER node
+
 # Expose the port that the application listens on.
 EXPOSE ${PORT}
 
