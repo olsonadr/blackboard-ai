@@ -74,11 +74,14 @@ FROM pip_deps as build_model
 # Copy the pip deps from the deps stage
 COPY --from=pip_deps /root/.local/share/virtualenvs/ /root/.local/share/virtualenvs/
 
-# Copy the rest of the source files into the image.
-COPY . .
+# Copy the rest of the relevant source files into the image.
+COPY ./utils/training.py ./utils/training.py
+COPY ./Pipfile ./Pipfile
+COPY ./Pipfile.lock ./Pipfile.lock
 
-# Run the build script.
-RUN pipenv run python3 utils/training.py 5 public/saved
+# Run the training script
+RUN mkdir -p ./public/saved
+RUN pipenv run python3 ./utils/training.py 5 ./public/saved
 
 
 ################################################################################
