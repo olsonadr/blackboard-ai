@@ -41,6 +41,11 @@ window.addEventListener("load", () => {
     inputCanvas.addEventListener("mouseup",    endDraw);
     inputCanvas.addEventListener("mouseout",   removeCursor);
 
+    inputCanvas.addEventListener("touchstart", startDrawTouch);
+    inputCanvas.addEventListener("touchmove",  drawTouch);
+    inputCanvas.addEventListener("touchend",   endDraw);
+    inputCanvas.addEventListener("touchout",   removeCursorTouch);
+
     const clearButton      = document.querySelector("#clear-button");
     const predictButton    = document.querySelector("#predict-button");
     const drawToolButton   = document.querySelector("#draw-button");
@@ -271,6 +276,13 @@ window.addEventListener("load", () => {
         }
     }
 
+    function startDrawTouch(e) {
+        e.preventDefault();
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        startDraw(e);
+    }
+
     function draw(e) {
         switch(currTool) {
             case 'draw':
@@ -283,6 +295,13 @@ window.addEventListener("load", () => {
             default:
                 break;
         }
+    }
+
+    function drawTouch(e) {
+        e.preventDefault();
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        draw(e);
     }
 
     function drawBrush(e) {
@@ -327,6 +346,13 @@ window.addEventListener("load", () => {
       else {
         inputCTX.putImageData(prevBrushUnderData, (prevEvent.clientX - inputRect.left + scrollX) / scale - inputCTX.lineWidth, (prevEvent.clientY - inputRect.top + scrollY)  / scale - inputCTX.lineWidth);
       }
+    }
+
+    function removeCursorTouch(e) {
+        e.preventDefault();
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        removeCursor(e);
     }
 
     function drawSelect(e) {
