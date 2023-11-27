@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Context for html rendering
 var indexContext = {
 
-  siteTitle:  "Black Board AI",
+  siteTitle:  "Blackboard AI",
   logoSource: "/BLK_BOARD_logo.jpg",
   styles:      [{src: "/style.css"},
                 {src: "https://use.fontawesome.com/releases/v5.11.2/css/all.css"},
