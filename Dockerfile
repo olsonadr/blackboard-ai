@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.0-experimental
 
 # ARGs are used to pass in values at build time.
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION=3.9
 ARG NODE_VERSION=16
 ARG NODE_ENV=production
 ARG PORT=3000
@@ -47,10 +47,9 @@ FROM python_base as pip_deps
 
 # Download pip dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.pip to speed up subsequent builds.
-# Leverage bind mounts to Pipfile and Pipfile.lock to avoid having to copy them
+# Leverage bind mounts to Pipfile to avoid having to copy them
 # into this layer.
 RUN --mount=type=bind,source=Pipfile,target=Pipfile \
-    --mount=type=bind,source=Pipfile.lock,target=Pipfile.lock \
     --mount=type=cache,target=/root/.pip \
     PIPENV_YES=1 pipenv install
 
@@ -76,8 +75,6 @@ COPY --from=pip_deps /root/.local/share/virtualenvs/ /root/.local/share/virtuale
 
 # Copy the rest of the relevant source files into the image.
 COPY ./utils/training.py ./utils/training.py
-COPY ./Pipfile ./Pipfile
-COPY ./Pipfile.lock ./Pipfile.lock
 
 # Run the training script
 RUN mkdir -p ./public/saved
