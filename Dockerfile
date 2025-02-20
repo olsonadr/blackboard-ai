@@ -75,11 +75,6 @@ COPY --from=pip_deps /root/.local/share/virtualenvs/ /root/.local/share/virtuale
 
 # Copy the rest of the relevant source files into the image.
 COPY ./utils/training.py ./utils/training.py
-<<<<<<< HEAD
-COPY ./Pipfile ./Pipfile
-COPY ./Pipfile.lock ./Pipfile.lock
-=======
->>>>>>> master
 
 # Run the training script
 RUN mkdir -p ./public/saved
