@@ -105,6 +105,9 @@ USER root
 RUN chown node:node /usr/src/app/data/saved-states
 USER node
 
+# Copy the Pipfile.lock from the deps stage
+COPY --from=pip_deps /usr/src/app/Pipfile.lock .
+
 # Expose the port that the application listens on.
 EXPOSE ${PORT}
 
