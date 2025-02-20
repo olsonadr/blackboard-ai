@@ -22,7 +22,7 @@ Currently, the site allows you to draw non-vertically-stacked numbers on the can
 #### Requirements
 - Npm
 - Pipenv
-- Python 3.6 or [pyenv](https://github.com/pyenv/pyenv)
+- Python 3.9 or [pyenv](https://github.com/pyenv/pyenv)
 
 #### Steps
 - Build/Install

@@ -22,6 +22,8 @@ test_data     = test_data.reshape(test_data.shape[0], 28, 28, 1)
 test_data     = test_data.astype("float32")
 test_data     = test_data / 255.0
 
+tf.keras.backend.clear_session()
+
 model = tf.keras.Sequential([
     tf.keras.layers.Flatten(input_shape = (28, 28, 1)),
     tf.keras.layers.Dense(128, activation = tf.nn.relu),
@@ -37,5 +39,5 @@ model.fit(training_data, training_labels, epochs = num_epochs)
 
 # score = model.evaluate(test_data, test_labels)
 # print(score)
-model.save((modelOutDir + "/MNIST_trained"))
+model.save((modelOutDir + "/MNIST_trained.keras"))
 tfjs.converters.save_keras_model(model, (modelOutDir + "/tfjsmodel"))

@@ -1,5 +1,3 @@
-version: '0.1.0'
-
 services:
   app:
     image: olsonadr/blackboard-ai
@@ -10,7 +8,6 @@ services:
       - 3000:3000
     volumes:
       - saved-data:/var/lib/blackboard/data
-
 
 volumes:
   saved-data:
