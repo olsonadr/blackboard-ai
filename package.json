@@ -23,8 +23,8 @@
   "homepage": "https://github.com/olsonadr/webdev-final-project#readme",
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.22.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "body-parser": "^1.20.4",
+    "express": "^4.22.1",
     "express-handlebars": "^5.3.1"
   }
 }
